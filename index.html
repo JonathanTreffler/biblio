@@ -59,7 +59,7 @@
 				<li id="nav_li_side2" class="nav_li"><a class="nav_a" id="nav_a_side2" onclick="switch_side_to(2);"></a></li>
 				<li id="nav_li_side3" class="nav_li"><a class="nav_a" id="nav_a_side3" onclick="switch_side_to(3);"></a></li>
 				<li id="nav_li_side4" class="nav_li"><a class="nav_a" id="nav_a_side4" onclick="switch_side_to(4);"></a></li>
-				<li id="nav_li_side5" class="nav_li"><a class="nav_a" id="nav_a_side5" onclick="switch_side_to(5);"></a></li>
+				<!--<li id="nav_li_side5" class="nav_li"><a class="nav_a" id="nav_a_side5" onclick="switch_side_to(5);"></a></li>-->
 				<li class="nav_li" style="float: right;" onclick="logout();"><a class="nav_a">Logout</a></li>
 			</ul>
 			<div id="nav_div_mobile">
@@ -112,14 +112,15 @@
 					<div class="book_div_padding book_div_right">
 						<div class="book_input_div">
 							<input style="width: 40%;" onkeypress="if (event.keyCode==13){ lend_button_clicked('lend_input_box','date_select',0);}" id="lend_input_box" type="text" placeholder="Barcode" autocomplete="off" class="input_gray input_focus_color">
-							<select style="width: 30%;" class="select" id="date_select"></select>
+							<!--<select style="width: 30%;" class="select" id="date_select"></select>-->
+							<input style="width: 30%;" id='date_select' class='input_gray input_focus_color' type='text' autocomplete='off' placeholder="Datum"></input>
 							<button style="margin: 10px 0 10px 0;width: 30%" onclick="lend_button_clicked('lend_input_box','date_select',0);" class="button" id="media_lend_button"><!-- lend --></button>
 						</div>
-						<div class="book_input_div">
+						<!--<div class="book_input_div">
 							<input style="width: 40%;" type="text" onkeypress="if (event.keyCode==13){ lend_button_clicked('lend_input_box_holiday','date_select_holiday',1);}" id="lend_input_box_holiday" placeholder="Barcode" autocomplete="off" class="input_gray input_focus_color">
 							<select style="width: 30%;" class="select" id="date_select_holiday"></select>
-							<button style="margin: 10px 0 10px 0;width: 30%;" onclick="lend_button_clicked('lend_input_box_holiday','date_select_holiday',1);" class="button" id="media_lend_button_holiday"><!-- holiday lend --></button>
-						</div>
+							<button style="margin: 10px 0 10px 0;width: 30%;" onclick="lend_button_clicked('lend_input_box_holiday','date_select_holiday',1);" class="button" id="media_lend_button_holiday"></button>
+						</div>-->
 						<br>
 						<div style="width: 100%; display: flex;">
 							<button class="button" id="edit_customer_button" style="margin-left: auto; margin-right: auto;"><!-- edit student --></button>
@@ -131,9 +132,9 @@
 						<h2 id="last_returned_media_instances" class="text_centered"></h2>
 						<table class="table" id="return_history_table" style="margin: auto;width: 100%;">
 							<tr class="tr">
-								<th>Buch</th>
+								<th>Name</th>
 								<th>Barcode</th>
-								<th>Schüler</th>
+								<th>Benutzer</th>
 								<th>Zeit</th>
 								<th>rückgängig</th>
 							</tr>
@@ -161,8 +162,8 @@
 								<use xlink:href="#search_icon"/>
 							</svg>
 						</div>
-						<select class="select small_spacer" id="catalog_subject_select"></select>
-						<select class="select small_spacer" id="catalog_school_year_select"></select>
+						<!--<select class="select small_spacer" id="catalog_subject_select"></select>
+						<select class="select small_spacer" id="catalog_school_year_select"></select>-->
 					</div>
 					<br>
 					<div style="width: 100%;">
@@ -183,14 +184,14 @@
 							<th id="catalog_medium_title_title" ></th>
 							<td id="catalog_medium_title" onclick="th_to_input(this.id);"></td>
 						</tr>
-						<tr>
+						<!--<tr>
 							<th id="catalog_medium_subject_title"></th>
 							<td id="catalog_medium_subject"><select id="catalog_medium_subject_select" onclick="editing_input_changed(this.id);" class="select"></select></td>
 						</tr>
 						<tr>
 							<th id="catalog_medium_school_year_title"></th>
 							<td id="catalog_medium_school_year"><select id="catalog_medium_school_year_select" onclick="editing_input_changed(this.id);" class="select"></select></th>
-						</tr>
+						</tr>-->
 						<tr>
 							<th id="catalog_medium_author_title"></th>
 							<td id="catalog_medium_author" onclick="th_to_input(this.id);"></td>
@@ -227,7 +228,7 @@
 							<th>Barcode</td>
 							<th>ausgeliehen an</th>
 							<th>ausgeliehen bis</th>
-							<th>Ferienausleihe</th>
+							<!--<th>Ferienausleihe</th>-->
 						</tr>
 					</table>
 					<br>
@@ -243,7 +244,7 @@
 								<use xlink:href="#search_icon"/>
 							</svg>
 						</div>
-						<select style="margin-left: 12px;" class="select" id="customers_class_select"></select>
+						<!--<select style="margin-left: 12px;" class="select" id="customers_class_select"></select>-->
 					</div>
 					<br>
 					<div style="width: 100%;">
@@ -264,17 +265,17 @@
 							<th id="customer_editing_name_title"></th>
 							<td id="customer_editing_name" onclick="th_to_input(this.id);"></td>
 						</tr>
-						<tr>
+						<!--<tr>
 							<th id="customer_editing_class_title" class="th"></th>
 							<td id="customer_editing_class"><select id="customer_editing_class_select" class="select" onchange="editing_input_changed(this.id)"></select></td>
-						</tr>
+						</tr>-->
 						<tr>
 							<th id="customer_editing_miscellaneous_title"></th>
 							<td id="customer_editing_miscellaneous" onclick="th_to_input(this.id);"></td>
 						</tr>
 					</table>
 					<div id="selected_customer_operations" class="centered_button_bar">
-						<button class="button" style="margin-left: 5px; margin-right: 5px;" onclick="remove_customer(current_customer_id);">Schüler löschen</button>
+						<button class="button" style="margin-left: 5px; margin-right: 5px;" onclick="remove_customer(current_customer_id);">Benutzer löschen</button>
 					</div>
 					<br>
 					<h2 class="text_centered">ausgeliehene Exemplare:</h2>
@@ -286,11 +287,11 @@
 					<table style="margin: auto;" id="customer_search_medias" class="table">
 						<tr>
 							<th><input type="checkbox"></input></th>
-							<th>Titel</th>
+							<th>Name</th>
 							<th>Barcode</th>
 							<th>verliehen bis</th>
 							<th>überfällig</th>
-							<th>Ferienausleihe</th>
+							<!--<th>Ferienausleihe</th>-->
 						</tr>
 					</table>
 				</div>
@@ -301,14 +302,14 @@
 					<summary id="overdue_medias_summary"></summary>
 					<table class="table" id="overdue_table">
 						<tr class="tr">
-							<th>Medium Name</th>
+							<th>Name</th>
 							<th>Barcode</th>
-							<th>Schüler Name</th>
-							<th>Klasse</th>
+							<th>Benutzer Name</th>
+							<!--<th>Klasse</th>-->
 						</tr>
 					</table>
 				</details>
-				<br>
+				<!--<br>
 				<details style="width: 75%;margin: auto;" open>
 					<summary id="overdue_holiday_medias_summary"></summary>
 					<table class="table" id="overdue_holiday_table">
@@ -319,7 +320,7 @@
 							<th>Klasse</th>
 						</tr>
 					</table>
-				</details>
+				</details>-->
 			</div>
 			<div id="admin_side" class="side" style="display: flex; flex-direction: column;">
 				<h1 id="admin_side_headline" class="text_centered"></h1>

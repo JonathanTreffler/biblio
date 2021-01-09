@@ -47,6 +47,9 @@ function onlogin(){
 	logged_in = true;
 	$("html").addClass("logged_in");
 
+	media_instance_loan_until_picker = new Pikaday({ field: document.getElementById('date_select')});
+	//media_instance_loan_until_picker.setDate(current_date);
+
 	if(findGetParameter("side") && findGetParameter("side") != 0){
 		switch_side_to(parseInt(findGetParameter("side")));
 	}else{
@@ -717,7 +720,7 @@ function refresh_types_list(select_id,selected_type_id){
 }
 function refresh_media_editing_instances(media_id1){
 	$("#media_details_instances_table").empty();
-	add_row_to_table("media_details_instances_table",["<input type='checkbox' id='media_search_instance_checkbox_all' onchange='select_all_instances_checkbox_clicked(this);'></input>",lang("barcode"),lang("loaned_to"),lang("loaned_until"),lang("holiday_lend")],true,false,[true]);
+	add_row_to_table("media_details_instances_table",["<input type='checkbox' id='media_search_instance_checkbox_all' onchange='select_all_instances_checkbox_clicked(this);'></input>",lang("barcode"),lang("loaned_to"),lang("loaned_until")],true,false,[true]);
 
 	get_data_request({requested_data : "media_instances", media_id : media_id1},false,true)
 	.then(function(data){
@@ -729,7 +732,6 @@ function refresh_media_editing_instances(media_id1){
 			let loaned_to_name = $instances[i].getAttribute("loaned_to_name");
 			let barcode = $instances[i].getAttribute("barcode");
 			let loaned_until = $instances[i].getAttribute("loaned_until");
-			let holiday = $instances[i].getAttribute("holiday");
 
 			let switch_to_customer = false;
 			let change_date = false;
@@ -740,13 +742,7 @@ function refresh_media_editing_instances(media_id1){
 				change_holiday = function(){change_media_instance_holiday(barcode,holiday);};
 			}
 
-			let holiday_lang = "";
-			if(holiday == "1"){
-				holiday_lang = lang("yes");
-			}else if(holiday == "0"){
-				holiday_lang = lang("no");
-			}
-			add_row_to_table("media_details_instances_table",["<input type='checkbox' class='media_search_instance_checkbox' instance_barcode='"+barcode+"'></input>",barcode,loaned_to_name,loaned_until,holiday_lang],false,[false,false,switch_to_customer,change_date,change_holiday],[true]);
+			add_row_to_table("media_details_instances_table",["<input type='checkbox' class='media_search_instance_checkbox' instance_barcode='"+barcode+"'></input>",barcode,loaned_to_name,loaned_until],false,[false,false,switch_to_customer,change_date],[true]);
 		}
 	})
 	.catch(function(){});
@@ -776,7 +772,7 @@ function refresh_customers_list(){
     		$('#lend_customer_select').append(new Option(lang("select_customer"),-1,false,false));
             
     		for(let i = 0; i < customers.length; i++){
-    			$('#lend_customer_select').append(new Option(customers[i].getAttribute('name')+" "+customers[i].getAttribute('class'),customers[i].getAttribute('id'),false,false));
+    			$('#lend_customer_select').append(new Option(customers[i].getAttribute('name'),customers[i].getAttribute('id'),false,false));
     		}
     		resolve();
         })
@@ -850,8 +846,8 @@ function refresh_date_input(holiday,date_select_id,error_message_id,auto_retry){
 	.catch(function(){});
 }
 function refresh_date_inputs(){
-	refresh_date_input(0,'#date_select','#lend_media_error_message',true);
-	refresh_date_input(1,'#date_select_holiday','#lend_media_error_message',true);
+	//refresh_date_input(0,'#date_select','#lend_media_error_message',true);
+	//refresh_date_input(1,'#date_select_holiday','#lend_media_error_message',true);
 }
 function refresh_medias_table(){
 	get_data_request({"requested_data":"medias_of_customer","customer_id": $("#lend_customer_select")[0].value},true,true,4)
@@ -861,7 +857,7 @@ function refresh_medias_table(){
 		$books = $xml.find("media");
 
 		$("#side1_media_instances_table").empty();
-		add_row_to_table("side1_media_instances_table",[lang("name"),lang("barcode"),lang("overdue"),lang("holiday_lend")],true);
+		add_row_to_table("side1_media_instances_table",[lang("name"),lang("barcode"),lang("overdue")],true);
 		for(i = 0; i < $books.length; i++){
 			let overdue_text = "";
 			if($books[i].getAttribute("holiday") == "1"){
@@ -874,7 +870,7 @@ function refresh_medias_table(){
 			}else{
 				overdue_text = "ja";
 			}
-			add_row_to_table("side1_media_instances_table",[$books[i].getAttribute("title"),$books[i].getAttribute("barcode"),overdue_text,ferienausleihe],false,["switch_media_search_side(1,"+$books[i].getAttribute('media_id')+"); switch_side_to(2);"]);
+			add_row_to_table("side1_media_instances_table",[$books[i].getAttribute("title"),$books[i].getAttribute("barcode"),overdue_text],false,["switch_media_search_side(1,"+$books[i].getAttribute('media_id')+"); switch_side_to(2);"]);
 		}
 		$("#edit_customer_button").unbind();
 		if(customer_id != "-1" && customer_id != -1){
@@ -893,21 +889,14 @@ function refresh_customer_editing_instances(customer_id){
 		$books = $xml.find("media");
 
 		$("#customer_search_medias").empty();
-		add_row_to_table("customer_search_medias",["<input type='checkbox' onchange='select_all_customer_instances_checkbox_clicked(this);'></input>",lang("name"),lang("barcode"),lang("loaned_until"),lang("overdue"),lang("holiday_lend")],true,false,[true]);
+		add_row_to_table("customer_search_medias",["<input type='checkbox' onchange='select_all_customer_instances_checkbox_clicked(this);'></input>",lang("name"),lang("barcode"),lang("loaned_until"),lang("overdue")],true,false,[true]);
 		for(i = 0; i < $books.length; i++){
 			let id = $books[i].getAttribute("media_id");
 			let barcode = $books[i].getAttribute("barcode");
 			let title = $books[i].getAttribute("title");
 			let loaned_until = $books[i].getAttribute("loaned_until");
-			let holiday = $books[i].getAttribute("holiday");
 
 			let overdue_text = "";
-			let ferienausleihe = "";
-			if($books[i].getAttribute("holiday") == "1"){
-				holiday_text = lang("yes");
-			}else{
-				holiday_text = lang("no");
-			}
 			if(Date.parse($books[i].getAttribute("loaned_until")) > Date.now()){
 				overdue_text = lang("no");
 			}else{
@@ -916,9 +905,8 @@ function refresh_customer_editing_instances(customer_id){
 
 			let switch_to_media = function(){switch_media_search_side(1,id); switch_side_to(2);}
 			let change_date = function(){change_media_instance_loaned_until(barcode,loaned_until);};
-			let change_holiday = function(){change_media_instance_holiday(barcode,holiday);};
 
-			add_row_to_table("customer_search_medias",["<input type='checkbox' class='customer_search_instance_checkbox' barcode='"+barcode+"'></input>",title,barcode,loaned_until,overdue_text,holiday_text],false,[false,switch_to_media,false,change_date,false,change_holiday],[true]);
+			add_row_to_table("customer_search_medias",["<input type='checkbox' class='customer_search_instance_checkbox' barcode='"+barcode+"'></input>",title,barcode,loaned_until,overdue_text],false,[false,switch_to_media,false,change_date,false],[true]);
 		}
 	})
 	.catch(function(){});
@@ -930,10 +918,10 @@ function refresh_overdue_table(holiday,table_id){
 		$books = $xml.find("book");
 
 		$('#'+table_id).empty();
-		add_row_to_table(table_id,[lang("title"),lang("barcode"),lang("customer_name"),lang("class")],true);
+		add_row_to_table(table_id,[lang("title"),lang("barcode"),lang("customer_name")],true);
 
 		for(let i = 0; i < $books.length; i++){
-			add_row_to_table(table_id,[$books[i].getAttribute("title"),$books[i].getAttribute("barcode"),$books[i].getAttribute("loaned_to_name"),$books[i].getAttribute("class_name")],false);
+			add_row_to_table(table_id,[$books[i].getAttribute("title"),$books[i].getAttribute("barcode"),$books[i].getAttribute("loaned_to_name")],false);
 		}
 	})
 	.catch(function(){});
@@ -943,16 +931,16 @@ function refresh_lists_overdue_tables(){
 	refresh_overdue_table(1,"overdue_holiday_table");
 }
 function refresh_customer_search(){
-	get_data_request({"requested_data" : "search_customer", "order_by" : customer_search_order_by, "search" : $("#customer_search_input")[0].value, "class_id" : $("#customers_class_select")[0].value},false,true)
+	get_data_request({"requested_data" : "search_customer", "order_by" : customer_search_order_by, "search" : $("#customer_search_input")[0].value},false,true)
 	.then(function(data, status){
 		$xml = $(data);
 		$customers = $xml.find( "customer" );
 
 		$("#customer_search_table").empty();
-		add_row_to_table("customer_search_table",[lang("identifier"),lang("name")/*,"Geburtstag"*/,lang("class")],true,["customer_search_order('id');","customer_search_order('name');"]);
+		add_row_to_table("customer_search_table",[lang("identifier"),lang("name")],true,["customer_search_order('id');","customer_search_order('name');"]);
 
 		function add_row(i){
-			add_row_to_table("customer_search_table",[$customers[i].getAttribute("id"),$customers[i].getAttribute("name")/*,$customers[i].getAttribute("birthday")*/,$customers[i].getAttribute("class_name")],false,"switch_customer_search_side(1,"+$customers[i].getAttribute('id')+");");
+			add_row_to_table("customer_search_table",[$customers[i].getAttribute("id"),$customers[i].getAttribute("name")],false,"switch_customer_search_side(1,"+$customers[i].getAttribute('id')+");");
 		}
 
 		if(customer_search_reverse == true){
@@ -985,16 +973,16 @@ function media_search_order(order_by){
 }
 function refresh_media_search(){
 	if(media_search_side == 0){
-		get_data_request({"requested_data" : "search_media", "order_by": media_search_order_by, "search" : $("#media_search_input")[0].value,"subject_id" : $("#catalog_subject_select")[0].value,"school_year_id" : $("#catalog_school_year_select")[0].value},false,true)
+		get_data_request({"requested_data" : "search_media", "order_by": media_search_order_by, "search" : $("#media_search_input")[0].value},false,true)
 		.then(function(data, status){
 			$xml = $(data);
 			$medias = $xml.find( "media" );
 
 			$("#media_search_table").empty();
-			add_row_to_table("media_search_table",[lang("identifier"),lang("title"),lang("author"),lang("publisher"),lang("price"),lang("school_year"),lang("type")],true,["media_search_order('id');","media_search_order('title');","media_search_order('author');","media_search_order('publisher');","media_search_order('price');"]);
+			add_row_to_table("media_search_table",[lang("identifier"),lang("title"),lang("author"),lang("publisher"),lang("price"),lang("type")],true,["media_search_order('id');","media_search_order('title');","media_search_order('author');","media_search_order('publisher');","media_search_order('price');"]);
 
 			function add_row(i){
-				add_row_to_table("media_search_table",[$medias[i].getAttribute("id"), $medias[i].getAttribute("title"), $medias[i].getAttribute("author"),$medias[i].getAttribute("publisher"),$medias[i].getAttribute("price") + " €",$medias[i].getAttribute("school_year"),$medias[i].getAttribute("type")],false,"switch_media_search_side(1,"+$medias[i].getAttribute("id")+");");
+				add_row_to_table("media_search_table",[$medias[i].getAttribute("id"), $medias[i].getAttribute("title"), $medias[i].getAttribute("author"),$medias[i].getAttribute("publisher"),$medias[i].getAttribute("price") + " €",$medias[i].getAttribute("type")],false,"switch_media_search_side(1,"+$medias[i].getAttribute("id")+");");
 			}
 
 			if(media_search_reverse == true){
@@ -1211,7 +1199,7 @@ function remove_media(media_id){
 }
 function remove_customer(customer_id){
 	Swal.fire({
-		title: 'Schüler wirklich löschen',
+		title: 'Benutzer wirklich löschen',
 		type: 'warning',
 		confirmButtonText: 'löschen',
 		showCancelButton: true,
@@ -1230,7 +1218,7 @@ function remove_customer(customer_id){
 }
 function new_customer(){
 	Swal.fire({
-		title: 'Neuer Schüler',
+		title: 'Neuer Benutzer',
 		type: 'question',
 		customClass: "swal_mobile_fullscreen",
 		confirmButtonClass: 'button',
@@ -1240,19 +1228,13 @@ function new_customer(){
 		buttonsStyling: false,
 		allowEnterKey: true,
 		html: "<div onkeypress='if (event.keyCode==13){Swal.clickConfirm();}'><input id='new_customer_name' type='text' class='input_gray input_focus_color new_media_input' placeholder='"+lang("name")+"'></input><br>"+
-		"<select id='new_customer_class' class='select new_customer_select'><option value='-1'>Klasse auswählen</option></select><br></div>",
+		"<br></div>",
 		preConfirm: () => {
 			returns = {
 				"action" : "new_customer",
 				"name" : $("#new_customer_name").val(),
-				"class_id" : $("#new_customer_class").val(),
 				};
 			let error = false;
-			if(returns["class_id"] == -1){
-				$("#new_customer_class").addClass("animated pulse");
-				setTimeout(function(){$("#new_customer_class").removeClass("pulse");},800);
-				error = true;
-			}
 			if(returns["name"] == ""){
 				$("#new_customer_name").addClass("animated pulse");
 				setTimeout(function(){$("#new_customer_name").removeClass("pulse");},800);
@@ -1289,8 +1271,6 @@ function new_media(){
 		"<input id='new_media_author' type='text' class='input_gray input_focus_color new_media_input' placeholder='"+lang("author")+"'></input><br>"+
 		"<input id='new_media_publisher' type='text' class='input_gray input_focus_color new_media_input' placeholder='"+lang("publisher")+"'></input><br>"+
 		"<input id='new_media_price' type='text' class='input_gray input_focus_color new_media_input' placeholder='"+lang("price")+"'></input><br>"+
-		"<select id='new_media_school_year_id' class='select new_media_select'></select><br>"+
-		"<select id='new_media_subject' class='select new_media_select'></select><br>"+
 		"<select id='new_media_type' class='select new_media_select'></select><br></div>",
 		preConfirm: () => {
 			returns = {
@@ -1299,21 +1279,9 @@ function new_media(){
 				"author" : $("#new_media_author").val(),
 				"publisher" : $("#new_media_publisher").val(),
 				"price" : $("#new_media_price").val(),
-				"school_year_id" : $("#new_media_school_year_id").val(),
-				"subject_id" : $("#new_media_subject").val(),
 				"type_id" : $("#new_media_type").val(),
 				};
 			let error = false;
-			if(returns["school_year_id"] == -1){
-				$("#new_media_school_year_id").addClass("animated pulse");
-				setTimeout(function(){$("#new_media_school_year_id").removeClass("pulse");},800);
-				error = true;
-			}
-			if(returns["subject_id"] == -1){
-				$("#new_media_subject").addClass("animated pulse");
-				setTimeout(function(){$("#new_media_subject").removeClass("pulse");},800);
-				error = true;
-			}
 			if(returns["type_id"] == -1){
 				$("#new_media_type").addClass("animated pulse");
 				setTimeout(function(){$("#new_media_type").removeClass("pulse");},800);
@@ -1425,15 +1393,19 @@ function get_selected_customer_media_instances(){
 }
 // ================================================
 // Action Button Handler
-function lend_button_clicked(input_box_id, date_select_id, holiday){
-	lend_media_instance($('#lend_customer_select')[0].value,$('#'+input_box_id)[0].value,$('#'+date_select_id)[0].value,holiday, function(data){
+function lend_button_clicked(input_box_id){
+
+	d = new Date(media_instance_loan_until_picker.toString());
+	until_date = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+(d.getDate());
+
+	lend_media_instance($('#lend_customer_select')[0].value,$('#'+input_box_id)[0].value,until_date,false, function(data){
 		//$('#'+input_box_id)[0].value = '';
 		clear_input_box("#"+input_box_id);
 		refresh_medias_table();
 	});
 }
 function return_button_clicked(){
-		enable_button_loading("media_return_button");
+		//enable_button_loading("media_return_button");
 		let infos;
 		get_data_request({"requested_data" : "media_instance_infos", "barcode" : $("#media_return_input")[0].value},false,true)
 		.then(function(data){

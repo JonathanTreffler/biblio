@@ -57,11 +57,11 @@ if(isset($_POST["action"])){
 					$error = $request->addChild("error");
 					$error->addAttribute("id","0");
 				}
-				if(!validateDate($_POST["until"],'Y-m-d')){
-					$success = false;
-					$error = $request->addChild("error");
-					$error->addAttribute("id","5");
-				}
+				//if(!validateDate($_POST["until"],'Y-m-d')){
+				//	$success = false;
+				//	$error = $request->addChild("error");
+				//	$error->addAttribute("id","5");
+				//}
 				if(!media_instance_exists($_POST["barcode"])){
 					$success = false;
 					$error = $request->addChild("error");
@@ -78,13 +78,9 @@ if(isset($_POST["action"])){
 					$error->addAttribute("id","7");
 					$error->addAttribute("extra_detail",customer_name(media_instance_loaned_to($_POST["barcode"])));
 				}
-				if(!(($_POST["holiday"] == "1") || ($_POST["holiday"] == "0"))){
-					$success = false;
-					$error = $request->addChild("error");
-					$error->addAttribute("id","8");
-				}
+
 				if($success){
-					lend_media_instance($_POST["barcode"] , $_POST["customer_id"], $_POST["until"] , $_POST["holiday"]);
+					lend_media_instance($_POST["barcode"] , $_POST["customer_id"], $_POST["until"] , "0");
 				}
 			}else{
 				$success = false;
@@ -94,7 +90,7 @@ if(isset($_POST["action"])){
 			break;
 		case "new_media":
 			if(permission_granted("create_media")){
-				if(!(isset($_POST["title"]) && isset($_POST["school_year_id"]) && isset($_POST["subject_id"]) && isset($_POST["type_id"]))){
+				if(!(isset($_POST["title"]) && isset($_POST["type_id"]))){
 					$success = false;
 					$error = $request->addChild("error");
 					$error->addAttribute("id","0");
@@ -110,7 +106,7 @@ if(isset($_POST["action"])){
 					$error->addAttribute("id","13");
 				}
 				if($success == true){
-					new_media($_POST["title"],$_POST["author"],$_POST["publisher"],$_POST["price"],$_POST["school_year_id"],$_POST["subject_id"],$_POST["type_id"]);
+					new_media($_POST["title"],$_POST["author"],$_POST["publisher"],$_POST["price"],$_POST["type_id"]);
 				}
 			}else{
 				$success = false;
@@ -120,13 +116,13 @@ if(isset($_POST["action"])){
 		break;
 		case "new_customer":
 			if(permission_granted("create_member")){
-				if(!(isset($_POST["name"]) && isset($_POST["class_id"]))){
+				if(!(isset($_POST["name"]))){
 					$success = false;
 					$error = $request->addChild("error");
 					$error->addAttribute("id","0");
 				}
 				if($success){
-					new_customer($_POST["name"],$_POST["class_id"]);
+					new_customer($_POST["name"]);
 				}
 			}else{
 				$success = false;

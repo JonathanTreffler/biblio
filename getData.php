@@ -446,7 +446,7 @@ if(isset($_GET["requested_data"])){
 		break;
 		case "search_customer":
 			$user = check_user();
-			if(isset($_GET["search"]) && isset($_GET["class_id"])){
+			if(isset($_GET["search"])){
 				if(isset($_GET["order_by"])){
 					switch($_GET["order_by"]){
 						case "id":
@@ -467,7 +467,7 @@ if(isset($_GET["requested_data"])){
 				$customers = new SimpleXMLElement("<customers></customers>");
 
 				while($row = $statement->fetch()){
-					if(($row['class_id'] == $_GET["class_id"]) || $_GET["class_id"] == -1){
+					//if(($row['class_id'] == $_GET["class_id"]) || $_GET["class_id"] == -1){
 						$xml_row = $customers->addChild('customer');
 						$xml_row->addAttribute('id',$row['id']);
 						$xml_row->addAttribute('name',$row['name']);
@@ -486,7 +486,7 @@ if(isset($_GET["requested_data"])){
 						$school_year_row = $statement3->fetch();
 
 						$xml_row->addAttribute('school_year',$school_year_row['name']);
-					}
+					//}
 				}
 				header('Content-Type: text/xml');
 				echo $customers->asXML();
@@ -494,7 +494,7 @@ if(isset($_GET["requested_data"])){
 		break;
 		case "search_media":
 			$user = check_user();
-			if(isset($_GET["search"]) && isset($_GET["subject_id"]) && isset($_GET["school_year_id"])){
+			if(isset($_GET["search"])){
 				if(isset($_GET["order_by"])){
 					switch($_GET["order_by"]){
 						case "id":
@@ -524,8 +524,8 @@ if(isset($_GET["requested_data"])){
 				$medias = new SimpleXMLElement("<medias></medias>");
 
 				while($row = $statement->fetch()){
-					if(($row['subject_id'] == $_GET["subject_id"]) || $_GET["subject_id"] == -1){
-						if(($row['school_year_id'] == $_GET["school_year_id"]) || $_GET["school_year_id"] == -1){
+					//if(($row['subject_id'] == $_GET["subject_id"]) || $_GET["subject_id"] == -1){
+						//if(($row['school_year_id'] == $_GET["school_year_id"]) || $_GET["school_year_id"] == -1){
 							$xml_row = $medias->addChild('media');
 							$xml_row->addAttribute('id',$row['id']);
 							$xml_row->addAttribute('title',$row['title']);
@@ -547,8 +547,8 @@ if(isset($_GET["requested_data"])){
 							$school_year_row = $statement3->fetch();
 
 							$xml_row->addAttribute('school_year',$school_year_row['name']);
-						}
-					}
+						//}
+					//}
 				}
 				header('Content-Type: text/xml');
 				echo $medias->asXML();

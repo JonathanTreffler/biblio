@@ -144,7 +144,8 @@ function design($id){
 	return $design[0];
 }
 function permission_granted($permission_name){
-	return permission_list()[$permission_name] == 1;
+	return True;
+	//return permission_list()[$permission_name] == 1;
 }
 function media_exists($title){
 	global $pdo;
@@ -267,20 +268,20 @@ function new_media_instance($media_id,$barcode){
 	$statement = $pdo->prepare("INSERT INTO media_instances (media_id,barcode) VALUES (:media_id,:barcode);");
 	$statement->execute(array("media_id" => $media_id, "barcode" => $barcode));
 }
-function new_media($title,$author,$publisher,$price,$school_year_id,$subject_id,$type_id){
+function new_media($title,$author,$publisher,$price,$type_id){
 	global $pdo;
 	if($price == ""){
 		$price = NULL;
 	}
 
-	$statement = $pdo->prepare("INSERT INTO medias (title,author,publisher,price,school_year_id,subject_id,type_id) VALUES (:title,:author,:publisher,:price,:school_year_id,:subject_id,:type_id);");
-	$statement->execute(array("title" => $title, "author" => $author, "publisher" => $publisher, "price" => $price, "school_year_id" => $school_year_id, "subject_id" => $subject_id, "type_id" => $type_id));
+	$statement = $pdo->prepare("INSERT INTO medias (title,author,publisher,price,type_id) VALUES (:title,:author,:publisher,:price,:type_id);");
+	$statement->execute(array("title" => $title, "author" => $author, "publisher" => $publisher, "price" => $price, "type_id" => $type_id));
 }
-function new_customer($name,$class_id){
+function new_customer($name){
 	global $pdo;
 
-	$statement = $pdo->prepare("INSERT INTO customers (name,class_id) VALUES (:name,:class_id);");
-	$statement->execute(array("name" => $name, "class_id" => $class_id));
+	$statement = $pdo->prepare("INSERT INTO customers (name) VALUES (:name);");
+	$statement->execute(array("name" => $name));
 }
 function remove_media_instance($barcode){
 	global $pdo;
